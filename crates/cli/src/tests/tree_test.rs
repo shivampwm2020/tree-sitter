@@ -834,3 +834,17 @@ fn test_reuse_invalidates_scanner_token_when_included_range_expands() {
         "(document (span (open_delim) (close_delim)))"
     );
 }
+
+#[test]
+fn test_previous_sibling_descendant_index() {
+    let mut parser = Parser::new();
+    parser.set_language(&get_language("json")).unwrap();
+    let tree = parser.parse("[]", None).unwrap();
+
+    let mut cursor = tree.walk();
+    assert!(cursor.goto_first_child()); // array
+    assert!(cursor.goto_last_child()); // ]
+    assert!(cursor.goto_previous_sibling()); // [
+
+    assert_eq!(cursor.descendant_index(), 2);
+}

@@ -131,6 +131,7 @@ static inline bool ts_tree_cursor_child_iterator_previous(
     .position = self->position,
     .child_index = self->child_index,
     .structural_child_index = self->structural_child_index,
+    .descendant_index = self->descendant_index,
   };
   *visible = ts_subtree_visible(*child);
   bool extra = ts_subtree_extra(*child);
@@ -143,6 +144,11 @@ static inline bool ts_tree_cursor_child_iterator_previous(
     if (self->structural_child_index > 0) {
       self->structural_child_index--;
     }
+  }
+
+  self->descendant_index -= ts_subtree_visible_descendant_count(*child);
+  if (*visible) {
+    self->descendant_index -= 1;
   }
 
   // unsigned can underflow so compare it to child_count
